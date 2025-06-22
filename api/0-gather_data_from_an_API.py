@@ -21,7 +21,10 @@ if response.status_code == 200:
     nbr_tasks = len(todos)
 
     # Display the report
-    print(f"Patricia Leshler is done with tasks ({count_done}/{nbr_tasks}):")
+    print(
+        f"Employee Patricia Leshler is done with tasks "
+        f"({count_done}/{nbr_tasks}):"
+    )
     for task in completed_tasks:
         print(f"\t {task['title']}")
 else:
