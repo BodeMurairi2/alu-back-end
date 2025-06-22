@@ -47,10 +47,10 @@ if __name__ == "__main__":
 
             for tasks in todos:
                 writer.writerow({
-                    'employee Id': employee_id,
+                    'employee Id': tasks['userId'],
                     'employee name': employee_name,
-                    'Task Completed Status': tasks.get('completed'),
-                    'Task Title': tasks.get('title')
+                    'Task Completed Status': tasks['completed'],
+                    'Task Title': tasks['title']
                 }
                 )
     else:
