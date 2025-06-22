@@ -1,8 +1,6 @@
 #!/usr/bin/python3
+# This module extracts user todo list based on ID
 
-'''
-This module extracts user todo list based on ID
-'''
 import requests
 
 api_url = "https://jsonplaceholder.typicode.com/todos/"
