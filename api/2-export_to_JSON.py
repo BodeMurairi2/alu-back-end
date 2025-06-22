@@ -50,8 +50,10 @@ if __name__ == "__main__":
         employee_tasks = {
             str(employee_id): users_todos
             }
-        with open(filename, 'w') as file:
-            json.dump(employee_tasks, file)
+        print(len(employee_tasks[str(employee_id)]))
+
+#        with open(filename, 'w') as file:
+#            json.dump(employee_tasks, file)
 
     else:
         print(f"Failed to retrieve todos for employee {employee_id}")
