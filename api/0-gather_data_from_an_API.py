@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 # This module extracts a user's todo list based on their ID
 
-import requests
-import sys
-
 if __name__ == "__main__":
+    import requests
+    import sys
+    
     # Define API URL and parameters
     api_url = "https://jsonplaceholder.typicode.com/todos"
     employeeId = sys.argv[1]
