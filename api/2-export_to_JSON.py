@@ -1,59 +1,45 @@
 #!/usr/bin/python3
 """
-This module extracts a user's todo list based on their ID
-and displays their completed tasks using the JSONPlaceholder API.
+This script exports all tasks for a given employee ID
+to a JSON file in the required format.
 """
 
-if __name__ == "__main__":
-    import requests
-    import sys
-    import json
+import json
+import requests
+import sys
 
+if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: ./0-gather_data_from_an_API.py <employee_id>")
+        print("Usage: ./2-export_to_JSON.py <employee_id>")
         sys.exit(1)
 
     employee_id = sys.argv[1]
 
-    try:
-        int(employee_id)
-    except ValueError:
-        print("Employee ID must be an integer.")
-        sys.exit(1)
-
-    # URLs
+    # Get user data
     user_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
-    todos_url = "https://jsonplaceholder.typicode.com/todos"
-
-    # Get user name
     user_response = requests.get(user_url)
     if user_response.status_code != 200:
-        print(f"Employee with ID {employee_id} not found.")
+        print(f"User with ID {employee_id} not found.")
         sys.exit(1)
 
-    employee_name = user_response.json().get('name')
+    username = user_response.json().get("username")
 
-    # Get todos
-    response = requests.get(todos_url, params={'userId': employee_id})
-    if response.status_code == 200:
-        todos = response.json()
-        filename = f'{employee_id}.json'
-        # create an empty list to store tasks
-        users_todos = []
-        for task in todos:
-            user_tasks = {
-                "tasks": task['title'],
-                "completed": task['completed'],
-                "username": employee_name
-                }
-            users_todos.append(user_tasks)
-        employee_tasks = {
-            str(employee_id): users_todos
-            }
-        print(len(employee_tasks[str(employee_id)]))
+    # Get user's todos
+    todos_url = "https://jsonplaceholder.typicode.com/todos"
+    todos_response = requests.get(todos_url, params={"userId": employee_id})
+    tasks = todos_response.json()
 
-#        with open(filename, 'w') as file:
-#            json.dump(employee_tasks, file)
+    # Format JSON data
+    user_tasks = []
+    for task in tasks:
+        user_tasks.append({
+            "task": task.get("title"),
+            "completed": task.get("completed"),
+            "username": username
+        })
 
-    else:
-        print(f"Failed to retrieve todos for employee {employee_id}")
+    result = {employee_id: user_tasks}
+
+    # Write to JSON file
+    with open(f"{employee_id}.json", "w") as json_file:
+        json.dump(result, json_file)
