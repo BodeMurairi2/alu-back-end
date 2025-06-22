@@ -48,7 +48,7 @@ if __name__ == "__main__":
                 }
             users_todos.append(user_tasks)
         employee_tasks = {
-            'USER_ID': users_todos
+            str(employee_id): users_todos
             }
         with open(filename, 'w') as file:
             json.dump(employee_tasks, file)
