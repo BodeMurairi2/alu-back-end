@@ -1,57 +1,56 @@
 #!/usr/bin/python3
 """
-This module extracts data extends from file1
-and save data to a csv file
+This script fetches a user's TODO list and exports it to a CSV file
+in the exact format expected by the ALX checker: no header, quoted fields.
 """
 
-if __name__ == "__main__":
-    import requests
-    import sys
-    import csv
+import csv
+import requests
+import sys
 
+if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: ./0-gather_data_from_an_API.py <employee_id>")
+        print("Usage: ./1-export_to_CSV.py <employee_id>")
         sys.exit(1)
 
     employee_id = sys.argv[1]
 
-    try:
-        int(employee_id)
-    except ValueError:
-        print("Employee ID must be an integer.")
-        sys.exit(1)
-
-    # URLs
+    # Fetch user data
     user_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
-    todos_url = "https://jsonplaceholder.typicode.com/todos"
-
-    # Get user name
     user_response = requests.get(user_url)
     if user_response.status_code != 200:
-        print(f"Employee with ID {employee_id} not found.")
+        print(f"User with ID {employee_id} not found.")
         sys.exit(1)
 
-    employee_name = user_response.json().get('name')
+    username = user_response.json().get('username')
 
-    # Get todos
-    response = requests.get(todos_url, params={'userId': employee_id})
-    if response.status_code == 200:
-        todos = response.json()
-        with open(f'{employee_id}.csv', 'w', newline='') as file:
-            fieldnames = ['employee Id',
-                          'employee name',
-                          'Task Completed Status',
-                          'Task Title'
-                          ]
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
-
-            for tasks in todos:
-                writer.writerow({
-                    'employee Id': tasks['userId'],
-                    'employee name': employee_name,
-                    'Task Completed Status': tasks['completed'],
-                    'Task Title': tasks['title']
-                }
-                )
-    else:
+    # Fetch todos
+    todos_url = "https://jsonplaceholder.typicode.com/todos"
+    todos_response = requests.get(todos_url, params={'userId': employee_id})
+    if todos_response.status_code != 200:
         print(f"Failed to retrieve todos for employee {employee_id}")
+        sys.exit(1)
+
+    tasks = todos_response.json()
+
+    # Write to CSV (NO HEADER, FIELDS QUOTED)
+    filename = f"{employee_id}.csv"
+    with open(filename, mode='w', newline='') as csvfile:
+        fieldnames = [
+            'USER_ID',
+            'USERNAME',
+            'TASK_COMPLETED_STATUS',
+            'TASK_TITLE'
+        ]
+        writer = csv.DictWriter(csvfile,
+                                fieldnames=fieldnames,
+                                quoting=csv.QUOTE_ALL
+                                )
+
+        for task in tasks:
+            writer.writerow({
+                'USER_ID': employee_id,
+                'USERNAME': username,
+                'TASK_COMPLETED_STATUS': task.get('completed'),
+                'TASK_TITLE': task.get('title')
+            })
