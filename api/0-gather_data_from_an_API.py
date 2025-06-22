@@ -1,31 +1,28 @@
 #!/usr/bin/python3
-# This module extracts user todo list based on ID
+# This module extracts a user's todo list based on their ID
 
 import requests
 
-api_url = "https://jsonplaceholder.typicode.com/todos/"
-
-parameter = {
-    'userID': 1
+# Define API URL and parameters
+api_url = "https://jsonplaceholder.typicode.com/todos"
+parameters = {
+    'userId': 1
 }
 
-response = requests.get(api_url, params=parameter)
+# Fetch data from API
+response = requests.get(api_url, params=parameters)
 
 if response.status_code == 200:
-    response_data = response.json()
+    todos = response.json()
 
-count_done = 0
+    # Count completed tasks
+    completed_tasks = [task for task in todos if task['completed']]
+    count_done = len(completed_tasks)
+    nbr_tasks = len(todos)
 
-# count the number of completed tasks
-for completion in response_data:
-    if completion['completed'] is True:
-        count_done += 1
-
-# number of tasks
-nbr_tasks = len(response_data)
-
-# Display the report
-print(f"Patricia Leshler is done with tasks({count_done}/{nbr_tasks})")
-for completed_tasks in response_data:
-    if completed_tasks['completed'] is True:
-        print(f'\t {completed_tasks['title']}')
+    # Display the report
+    print(f"Patricia Leshler is done with tasks ({count_done}/{nbr_tasks}):")
+    for task in completed_tasks:
+        print(f"\t {task['title']}")
+else:
+    print(f"Failed to retrieve data: Status code {response.status_code}")
