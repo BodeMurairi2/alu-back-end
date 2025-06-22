@@ -40,10 +40,10 @@ if __name__ == "__main__":
         filename = f'{employee_id}.json'
         # create an empty list to store tasks
         users_todos = []
-        for tasks in todos:
+        for task in todos:
             user_tasks = {
-                "tasks": tasks['title'],
-                "completed": tasks['completed'],
+                "tasks": task['title'],
+                "completed": task['completed'],
                 "username": employee_name
                 }
             users_todos.append(user_tasks)
